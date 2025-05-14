@@ -6,10 +6,8 @@ services:
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
       python manage.py migrate
-      if [[ $CREATE_SUPERUSER ]];
-      then
-        python manage.py createsuperuser
-      fi
+      python manage.py create_default_superuser
+
     startCommand: gunicorn Market.wsgi:application
     autoDeploy: true
     envVars:
