@@ -6,7 +6,12 @@ services:
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
       python manage.py migrate
-      echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('Kano', 'admin@gmail.com', 'Admin@123')" | python manage.py shell
+      if [ "$CREATE_SUPERUSER" = "True" ]; then
+        python manage.py createsuperuser \
+          --no-input \
+          --email "$DJANGO_SUPERUSER_EMAIL" \
+          --username "$DJANGO_SUPERUSER_USERNAME"
+      fi
     startCommand: gunicorn Market.wsgi:application
     autoDeploy: true
     envVars:
@@ -18,3 +23,11 @@ services:
         fromDatabase:
           name: db
           property: connectionString
+      - key: CREATE_SUPERUSER
+        value: true
+      - key: DJANGO_SUPERUSER_EMAIL
+        value: admin@example.com
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: admin
+      - key: DJANGO_SUPERUSER_PASSWORD
+        value: your_secure_password
