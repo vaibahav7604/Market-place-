@@ -3,42 +3,104 @@
 {% block title %}Items{% endblock %}
 
 {% block content %}
-    <div class="pb-6 grid grid-cols-4 gap-4 bg-gray-100">
-        <div class="col-span-1">
-            <form method="get" action="{% url 'item:non' %}">
-                <input name="query" class="w-full py-4 px-6 border rounded-xl" type="text" value="{{ query }}" placeholder="Find a bike, a chair or car...">
-
-                <button class="mt-2 py-4 px-8 text-lg bg-teal-500 text-white rounded-xl">Search</button>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Sidebar: Search and Filters -->
+        <div class="lg:col-span-1 bg-white rounded-xl shadow-md border border-gray-100 p-6">
+            <!-- Search Form -->
+            <form method="get" action="{% url 'item:non' %}" class="mb-6">
+                <div class="relative">
+                    <input name="query" class="w-full py-3 px-4 pl-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-gray-50 text-sm sm:text-base placeholder-gray-400" type="text" value="{{ query }}" placeholder="Find a bike, a chair, or car...">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </span>
+                </div>
+                <button class="mt-3 w-full py-2 px-6 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 hover:scale-105 transition-all duration-300 text-sm sm:text-base">Search</button>
             </form>
-            <ul>
+
+            <!-- Categories Filter -->
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Categories</h3>
+            <ul class="space-y-2">
                 {% for category in categories %}
-                    <li class="py-2 px-2 rounded-xl{% if category.id == category_id %} bg-gray-200{% endif %}">
-                        <a href="{% url 'item:non' %}?query={{ query }}&category={{ category.id }}">{{ category.name }}</a>
-                    </li>
+                <li class="py-2 px-3 rounded-lg {% if category.id == category_id %} bg-indigo-50 text-indigo-600 {% else %} hover:bg-indigo-50 hover:text-indigo-600 {% endif %} transition-colors duration-200">
+                    <a href="{% url 'item:non' %}?query={{ query }}&category={{ category.id }}" class="block text-sm sm:text-base">{{ category.name }}</a>
+                </li>
                 {% endfor %}
             </ul>
-            <ul>
-                <li><a href="{% url 'item:non' %}" class="mt-2 py-4 px-8 inline-block bg-yellow-500 text-lg rounded-xl text-white">Clear</a></li>
-            </ul>
+
+            <!-- Clear Filter Button -->
+            <a href="{% url 'item:non' %}" class="mt-4 inline-block w-full py-2 px-6 bg-gray-200 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:scale-105 transition-all duration-300 text-center text-sm sm:text-base">Clear Filters</a>
         </div>
 
-        <div class="col-span-3">
-            <div class="grid grid-cols-3 gap-3">
-                {% for item in items %}
-                    <div>
-                        <a href="{% url 'item:detail' item.id %}">
-                            <div>
-                                <img src="{{ item.image.url }}" class="rounded-t-xl">
-                            </div>
+        <!-- Items Grid -->
+        <div class="lg:col-span-3">
+            <!-- Sort By Dropdown -->
+            <div class="mb-6 flex justify-end">
+                <div class="relative inline-block">
+                    <select name="sort" id="sort" onchange="applySort()" class="appearance-none w-48 py-2 px-4 pr-8 border border-gray-200 rounded-lg bg-gray-50 text-sm sm:text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300 cursor-pointer">
+                        <option value="">Sort By</option>
+                        <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                        <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+                        <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest First</option>
+                    </select>
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </span>
+                </div>
+            </div>
 
-                            <div class="p-6 bg-white rounded-b-xl">
-                                <h2 class="text-2xl">{{ item.name }}</h2>
-                                <p class="text-gray-500">Price: {{ item.price }}</p>
-                            </div>
-                        </a>
-                    </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for item in items %}
+                <div class="bg-white rounded-xl shadow-md border border-gray-100 transform hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+                    <a href="{% url 'item:detail' item.id %}" class="block relative">
+                        <div class="relative overflow-hidden rounded-t-xl">
+                            <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-40 sm:h-48 object-cover transform hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/30 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+                        </div>
+                        <div class="p-4">
+                            <h2 class="text-base sm:text-lg font-semibold text-gray-900 truncate animate-fade-in mb-1">{{ item.name }}</h2>
+                            <p class="text-gray-600 text-xs sm:text-sm">Price: Rs. {{ item.price }}</p>
+                        </div>
+                        <!-- Hover Overlay -->
+                        <div class="absolute inset-0 flex items-center justify-center bg-indigo-600 bg-opacity-80 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl">
+                            <span class="text-white font-semibold text-sm sm:text-base">View Item</span>
+                        </div>
+                    </a>
+                </div>
+                {% empty %}
+                <div class="col-span-full text-center py-8">
+                    <p class="text-gray-600 text-sm sm:text-base animate-fade-in">No items found.</p>
+                </div>
                 {% endfor %}
             </div>
         </div>
     </div>
+</div>
+
+<script>
+function applySort() {
+    const sortValue = document.getElementById('sort').value;
+    const url = new URL(window.location.href);
+    if (sortValue) {
+        url.searchParams.set('sort', sortValue);
+    } else {
+        url.searchParams.delete('sort');
+    }
+    window.location.href = url.toString();
+}
+</script>
+
+<style>
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+}
+</style>
 {% endblock %}

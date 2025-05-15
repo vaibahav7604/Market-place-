@@ -2,6 +2,10 @@ from django.shortcuts import render ,redirect
 from core.forms import SignupForm,LoginForm
 from item.models import Item,Category
 from django.contrib.auth import  login
+from django.conf import settings
+import random
+from django.core.mail import send_mail
+
 def index(request):
     items=Item.objects.filter(is_sold=False)[:6]
     categories=Category.objects.all()
@@ -53,3 +57,19 @@ def login_view(request):
     return render(request, 'core/login.html', {
         'form': form
     })
+
+# def generate_numeric_otp():
+#     return str(random.randint(1000, 9999))
+
+# # Send email
+# def send_email(otp, recipient_list):
+#     subject = 'OTP for 2FA Login'
+#     message = f'Your OTP for 2FA Authentication: {otp}'
+#     from_email = settings.EMAIL_HOST_USER
+#     try:
+#         send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+#     except Exception as e:
+#         raise Exception(f"Failed to send email: {str(e)}")
+    
+
+    
