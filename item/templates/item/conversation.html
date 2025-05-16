@@ -1,0 +1,34 @@
+{#Containes all the chats with across buyer sellers#}
+
+
+
+{% extends 'core/base.html' %}
+{% block title %}Conversation for {{ item.name }}{% endblock %}
+{% block content %}
+<div class="max-w-5xl mx-auto my-12 px-4 sm:px-6 lg:px-8 py-8 bg-white rounded-2xl shadow-lg border border-gray-100">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Conversation for {{ item.name }}</h1>
+    <p class="text-gray-600 mb-4">Chatting with:
+        {% if request.user == conversation.buyer %}
+            {{ conversation.item.created_by.username }}
+        {% else %}
+            {{ conversation.buyer.username }}
+        {% endif %}
+    </p>
+    <div class="messages mb-6 max-h-96 overflow-y-auto">
+        {% for message in conversation.messages.all %}
+            <div class="p-4 mb-2 {% if message.sender == request.user %}bg-indigo-100 text-right{% else %}bg-gray-50{% endif %} rounded-lg">
+                <p class="font-semibold">{{ message.sender.username }}</p>
+                <p>{{ message.content }}</p>
+                <p class="text-xs text-gray-500">{{ message.created_at }}</p>
+            </div>
+        {% empty %}
+            <p class="text-gray-600">No messages yet.</p>
+        {% endfor %}
+    </div>
+    <form method="post" action="{% url 'item:conversation' conversation.id %}">
+        {% csrf_token %}
+        <textarea name="message" required class="w-full p-4 border rounded-lg mb-4" placeholder="Type your message..." rows="4"></textarea>
+        <button type="submit" class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700">Send</button>
+    </form>
+</div>
+{% endblock %}

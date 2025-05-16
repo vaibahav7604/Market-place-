@@ -1,0 +1,26 @@
+{#inbox pagee #}
+
+{% extends 'core/base.html' %}
+{% block title %}Inbox{% endblock %}
+{% block content %}
+<div class="max-w-5xl mx-auto my-12 px-4 sm:px-6 lg:px-8 py-8 bg-white rounded-2xl shadow-lg border border-gray-100">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Inbox</h1>
+    {% for conversation in conversations %}
+        <div class="p-4 mb-4 bg-gray-50 rounded-lg">
+            <a href="{% url 'item:conversation' conversation.id %}" class="text-indigo-600 font-semibold">
+                {{ conversation.item.name }} - with
+                {% if request.user == conversation.buyer %}
+                    {{ conversation.item.created_by.username }}
+                {% else %}
+                    {{ conversation.buyer.username }}
+                {% endif %}
+            </a>
+            <p class="text-gray-600 text-sm">Last message: {{ conversation.messages.last.content|truncatewords:10 }}</p>
+            <p class="text-gray-500 text-xs">{{ conversation.created_at }}</p>
+        </div>
+    {% empty %}
+        <p class="text-gray-600">No conversations yet. Start one by contacting a seller!</p>
+    {% endfor %}
+</div>
+{% endblock %}
+
