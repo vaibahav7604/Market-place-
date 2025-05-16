@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = os.getenv("DEBUG", "False") == "True"
 # DEBUG = "False"
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'wSxYf4DLwMrvVpYkSfmkrhEs32agjBEt')
+SECRET_KEY = os.getenv('SECRET_KEY', 'jd8oFmMiNYpwPy8AGEh5sgQ4Zlq1PTql')
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-8tpfmdtt7%-vv#33r23yda+ox@udvs#*i&@_uu7jr-k7r9baea'
 
@@ -33,9 +33,6 @@ INSTALLED_APPS = [
     'item',
     'dashboard',
 ]
-# SECRET_KEY = 'django-insecure-o77-x8(5jv3@uc)g2y00q-36zvn=d_v+-!pl=x(c=w4*$++_)f'
-
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -65,7 +62,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Market.wsgi.application'
-
+#
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',

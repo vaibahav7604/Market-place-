@@ -12,7 +12,7 @@ services:
     autoDeploy: true
     envVars:
       - key: SECRET_KEY
-        value: wSxYf4DLwMrvVpYkSfmkrhEs32agjBEt
+        value: jd8oFmMiNYpwPy8AGEh5sgQ4Zlq1PTql
       - key: DEBUG
         value: false
       - key: DATABASE_URL
